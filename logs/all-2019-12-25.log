@@ -1,0 +1,22 @@
+[2019-12-25 11:44:15,979] [autoreload.py:576] [autoreload:run_with_reloader] [INFO]- Watching for file changes with StatReloader
+[2019-12-25 11:44:22,089] [log.py:228] [log:log_response] [WARNING]- Not Found: /
+[2019-12-25 11:44:22,090] [basehttp.py:154] [basehttp:log_message] [WARNING]- "GET / HTTP/1.1" 404 2035
+[2019-12-25 11:44:22,222] [log.py:228] [log:log_response] [WARNING]- Not Found: /favicon.ico
+[2019-12-25 11:44:22,223] [basehttp.py:154] [basehttp:log_message] [WARNING]- "GET /favicon.ico HTTP/1.1" 404 2086
+[2019-12-25 11:44:22,227] [basehttp.py:154] [basehttp:log_message] [ERROR]- "GET /favicon.ico HTTP/1.1" 500 59
+[2019-12-25 11:44:29,881] [views.py:7] [views:testhtml] [INFO]- info的测试！
+[2019-12-25 11:44:29,882] [views.py:8] [views:testhtml] [ERROR]- error的测试！
+[2019-12-25 11:44:29,990] [basehttp.py:154] [basehttp:log_message] [INFO]- "GET /testhtml HTTP/1.1" 200 170
+[2019-12-25 14:52:38,113] [autoreload.py:203] [autoreload:trigger_reload] [INFO]- D:\Project\Django_git\Django_git\settings.py changed, reloading.
+[2019-12-25 14:52:39,362] [autoreload.py:576] [autoreload:run_with_reloader] [INFO]- Watching for file changes with StatReloader
+[2019-12-25 14:52:45,374] [autoreload.py:203] [autoreload:trigger_reload] [INFO]- D:\Project\Django_git\Django_git\settings.py changed, reloading.
+[2019-12-25 14:52:46,221] [autoreload.py:576] [autoreload:run_with_reloader] [INFO]- Watching for file changes with StatReloader
+[2019-12-25 15:46:37,436] [log.py:228] [log:log_response] [WARNING]- Not Found: /
+[2019-12-25 15:46:37,437] [basehttp.py:154] [basehttp:log_message] [WARNING]- "GET / HTTP/1.1" 404 2035
+[2019-12-25 15:47:44,767] [log.py:228] [log:log_response] [WARNING]- Not Found: /asdftesthtmlasf
+[2019-12-25 15:47:44,767] [basehttp.py:154] [basehttp:log_message] [WARNING]- "GET /asdftesthtmlasf HTTP/1.1" 404 2098
+[2019-12-25 15:47:52,690] [log.py:228] [log:log_response] [WARNING]- Not Found: /asdftesthtml
+[2019-12-25 15:47:52,691] [basehttp.py:154] [basehttp:log_message] [WARNING]- "GET /asdftesthtml HTTP/1.1" 404 2089
+[2019-12-25 15:48:00,226] [views.py:7] [views:testhtml] [INFO]- info的测试！
+[2019-12-25 15:48:00,226] [views.py:8] [views:testhtml] [ERROR]- error的测试！
+[2019-12-25 15:48:00,258] [basehttp.py:154] [basehttp:log_message] [INFO]- "GET /testhtml HTTP/1.1" 200 170
