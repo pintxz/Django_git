@@ -89,7 +89,8 @@ DATABASES = {
         'NAME': 'web',  # 数据库名，先前创建的
         'USER': 'root',  # 用户名，可以自己创建用户
         'PASSWORD': 'feng00104',  # 密码
-        'HOST': '192.168.79.131',  # mysql服务所在的主机ip
+        # 'HOST': '192.168.79.131',  # mysql服务所在的主机ip   验收虚拟机
+        'HOST': '119.45.15.183',  # mysql服务所在的主机ip  生产主机
         'PORT': '3306',  # mysql服务端口
     }
 }

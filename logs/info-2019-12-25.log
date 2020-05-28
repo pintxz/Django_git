@@ -1,4 +1,0 @@
-[2019-12-25 11:44:29,881] [views.py:7] [views:testhtml] [INFO]- info的测试！
-[2019-12-25 11:44:29,882] [views.py:8] [views:testhtml] [ERROR]- error的测试！
-[2019-12-25 15:48:00,226] [views.py:7] [views:testhtml] [INFO]- info的测试！
-[2019-12-25 15:48:00,226] [views.py:8] [views:testhtml] [ERROR]- error的测试！
