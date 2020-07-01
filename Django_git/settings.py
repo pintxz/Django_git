@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web.apps.WebConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,8 @@ DATABASES = {
         'USER': 'root',  # 用户名，可以自己创建用户
         'PASSWORD': 'feng00104',  # 密码
         # 'HOST': '192.168.79.131',  # mysql服务所在的主机ip   验收虚拟机
-        'HOST': '119.45.15.183',  # mysql服务所在的主机ip  生产主机
+        # 'HOST': '119.45.15.183',  # mysql服务所在的主机ip  生产主机
+        'HOST': 'localhost',  # mysql服务所在的主机ip  生产主机
         'PORT': '3306',  # mysql服务端口
     }
 }
@@ -131,7 +133,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 import time
 
