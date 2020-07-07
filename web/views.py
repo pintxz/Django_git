@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-import json, logging, datetime
+import json, logging, datetime, random
 from web import models
 from api import punch
 
@@ -32,6 +32,11 @@ def add_book(request):
     return JsonResponse(response)
 
 
+def test(request):
+    punch.dcits('fengjh')
+    return HttpResponse('123')
+
+
 def api(request):
     ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
     if request.method == 'GET':
@@ -40,17 +45,12 @@ def api(request):
         # print(request.body)  # b"{username:admin}"
         name = request.POST.get('name')
         pwd = request.POST.get('pwd')
-        # user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
-        # if user_obj:
-        if pwd == '123456':
+        user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
+        if user_obj:
             ret['status'] = True
-            fengjh = {"userId": 30594, "projectId": 50411, "ruleId": 51, "addrId": 315, "apprUserId": 29707,
-                      "deptId": 12526,
-                      "workReportType": "1", "longitude": "112.569206", "latitude": "37.811374",
-                      "address": "山西省太原市小店区长治路228号",
-                      "secondAppUser": "30586", "imagePath": ""}
-            result = punch.dcits(fengjh)
+            result = punch.dcits(name)
             return HttpResponse(result)
+            # return render(request, 'result.html', result)
         else:
             ret['error']['login_error'] = '用户名或密码错误'
             return render(request, 'login.html', ret)
@@ -81,7 +81,7 @@ def index(request):
     return render(request, 'index.html', ret)
 
 
-def test(request):
+def test1(request):
     ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
     ret['error']['login_error'] = '用户名或密码错误'
     # return HttpResponse(ret['error'])
