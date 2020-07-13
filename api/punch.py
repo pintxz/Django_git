@@ -21,6 +21,9 @@ def dcits(name):
     header_dict = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 9; MI 6 Build/PKQ1.190118.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.17 SP-engine/2.13.0 baiduboxapp/11.17.0.13 (Baidu; P1 9) NABar/1.0",
         "Content-Type": "application/json"}
+    header_dict = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 8.1.0; vivo s1 Build/OPM1.171019.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.20 SP-engine/2.16.0 baiduboxapp/11.20.0.14 (Baidu; P1 8.1.0)",
+        "Content-Type": "application/json"}
     '''
     textmod = {"userId": username.userId, "projectId": username.projectId, "ruleId": username.ruleId,
                "addrId": username.addrId, "apprUserId": username.apprUserId, "deptId": username.deptId,
