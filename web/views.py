@@ -7,6 +7,7 @@ from functools import wraps
 from api import punch
 
 logger = logging.getLogger('log')
+ret = {}
 
 # 说明：这个装饰器的作用，就是在每个视图函数被调用时，都验证下有没法有登录，
 # 如果有过登录，则可以执行新的视图函数，
@@ -25,12 +26,12 @@ def test(request):
     '''
     punch.dcits('fengjh')
     return HttpResponse('123')
+    119.45.15.183
     '''
     return HttpResponse('123')
 
 
 def login(request):
-    ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
