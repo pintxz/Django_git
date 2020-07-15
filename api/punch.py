@@ -12,7 +12,7 @@ def dcits(name):
     username = models.ask.objects.get(name=name)
     header = models.phone_model.objects.get(model=username.model)
     header_dict = json.loads(header.header_dict)
-
+    result = {'dk':'','dz':'','fh':''}
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
     '''
     header_dict = {
@@ -32,15 +32,23 @@ def dcits(name):
                "secondAppUser": username.secondAppUser, "imagePath": username.imagePath}
 
     try:
-        result = requests.post(url, json=textmod, headers=header_dict, verify=False)
+        results = requests.post(url, json=textmod, headers=header_dict, verify=False)
     except:
-        return '打卡请求异常！！！'
-    logger.info(result.text)
-
+        result['dk'] = '打卡请求异常！！！'
+        return result
+    logger.info(results.text)
+    result['dk'] = '打卡成功！'
+    if '保存成功' != json.loads(results.text)['msg']:
+        result['dk'] = '打卡返回值异常，请联系管理员，并去微信小程序进行核实打卡结果！'
+        logger.info(results)
     call_url = 'https://itswkwc.dcits.com/wechatserver/sign/getCard?openId=%s' % username.openId
     try:
         call_result = requests.get(call_url, headers=header_dict, verify=False)
     except:
-        return '打卡结果：%s；\n检查结果：请求异常！！！' % result.text
+        result['dz'] = '请求异常！！！'
+        result['fh'] = '请联系管理员！！！'
+        return result
+    result['dz'] = json.loads(call_result.text)['firstCard']['address']
+    result['fh'] = json.loads(call_result.text)['msg']
     logger.info(call_result.text)
-    return '打卡结果：%s；\n检查结果：%s' % (result.text, call_result.text)
+    return result

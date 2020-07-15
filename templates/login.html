@@ -6,13 +6,13 @@
     <title>login UI</title>
     <link rel="stylesheet" href="{% static 'web/css/login.css' %}">
     <link rel="shortcut icon" href="../static/favicon.ico">
-    <meta name="viewport" content="width=device-width,initial-scale=0.5">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7, minimum-scale=0.5, maximum-scale=2.0, user-scalable=1" />
 </head>
 
 <body>
 <div class="box">
-    <h2>打卡</h2>
-    <form action="/api" method="post">{% csrf_token %}
+    <h2>登陆</h2>
+    <form action="/login" method="post">{% csrf_token %}
         <div class="inputBox">
             <input type="text" name="name" required="required">
             <label>用户名</label>

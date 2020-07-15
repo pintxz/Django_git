@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'web/css/index.css' %}">
+    <link rel="shortcut icon" href="../static/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7, minimum-scale=0.5, maximum-scale=2.0, user-scalable=1" />
+</head>
+<body>
+    <div class="head_wrapper">
+        <span class="s-top-img-wrapper">
+            <img src="https://himg.bdimg.com/sys/portraitn/item/15d3e5ad9fe5a986e69da5e7a297e59b9ee9ad82e6b1a46e37">
+        </span>
+        <span class="s-top-username">{{ name }}</span>
+        <span class="udsgrewff">
+            <a href="http://192.168.0.130:8000/logout"  class="logout" name="tj_logout">退出</a>  <!--此处地址需要要调整成正确的退出地址-->
+        </span>
+    </div>
+    <div class="dfaehgr">
+        <input type="button" value="调起打卡接口" onclick="javascrtpt:window.location.href='http://192.168.0.130:8000/punch_the_clock_api'">
+    </div>
+    <div class="fniweg">打卡结果：{{date.msg.dk}}</div>
+    <div class="fniweg">打卡地址：{{date.msg.dz}}</div>
+    <div class="fniweg">返回结果：{{date.msg.fh}}</div>
+
+
+
+
+
+
+
+</body>
+
+
+
+

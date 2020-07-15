@@ -3,57 +3,30 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 import json, logging, datetime, random
 from web import models
+from functools import wraps
 from api import punch
 
 logger = logging.getLogger('log')
 
-
-# Create your views here.
-
-@require_http_methods(["GET"])
-def testhtmls(request):
-    logger.info('info的测试！')
-    logger.error('error的测试！')
-    logger.debug('debug的测试！')
-    return render(request, 'index.html')
-
-
-@require_http_methods(["GET"])
-def add_book(request):
-    response = {}
-    try:
-        book = Book(book_name=request.GET.get('book_name'))
-        book.save()
-        response['msg'] = 'success'
-        response['error_num'] = 0
-    except  Exception as e:
-        response['msg'] = str(e)
-        response['error_num'] = 1
-    return JsonResponse(response)
+# 说明：这个装饰器的作用，就是在每个视图函数被调用时，都验证下有没法有登录，
+# 如果有过登录，则可以执行新的视图函数，
+# 否则没有登录则自动跳转到登录页面。
+def check_login(f):
+    @wraps(f)
+    def inner(request, *arg, **kwargs):
+        if request.session.get('is_login') == '1':
+            return f(request, *arg, **kwargs)
+        else:
+            return redirect('/login')
+    return inner
 
 
 def test(request):
+    '''
     punch.dcits('fengjh')
     return HttpResponse('123')
-
-
-def api(request):
-    ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    if request.method == 'POST':
-        # print(request.body)  # b"{username:admin}"
-        name = request.POST.get('name')
-        pwd = request.POST.get('pwd')
-        user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
-        if user_obj:
-            ret['status'] = True
-            result = punch.dcits(name)
-            return HttpResponse(result)
-            # return render(request, 'result.html', result)
-        else:
-            ret['error']['login_error'] = '用户名或密码错误'
-            return render(request, 'login.html', ret)
+    '''
+    return HttpResponse('123')
 
 
 def login(request):
@@ -61,90 +34,88 @@ def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
-        # print(request.body)  # b"{username:admin}"
         name = request.POST.get('name')
         pwd = request.POST.get('pwd')
         user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
         if user_obj:
-            ret['status'] = True
-            return render(request, 'index.html', ret)
+            # 登录成功
+            # 1，生成特殊字符串
+            # 2，这个字符串当成key，此key在数据库的session表（在数据库存中一个表名是session的表）中对应一个value
+            # 3，在响应中,用cookies保存这个key ,(即向浏览器写一个cookie,此cookies的值即是这个key特殊字符）
+            request.session['is_login'] = '1'  # 这个session是用于后面访问每个页面（即调用每个视图函数时要用到，即判断是否已经登录，用此判断）
+            # request.session['username']=username  # 这个要存储的session是用于后面，每个页面上要显示出来，登录状态的用户名用。
+            # 说明：如果需要在页面上显示出来的用户信息太多（有时还有积分，姓名，年龄等信息），所以我们可以只用session保存user_id
+            request.session['user_name'] = user_obj.name
+            request.session.set_expiry(15)
+            # request.session.set_expiry(value)
+            # 如果value是个整数，session会在些秒数后失效（适用于整个Django框架，即这个数值时效时整个页面都会session失效）。
+            # 如果value是个datatime或timedelta，session就会在这个时间后失效。
+            # 如果value是0, 用户关闭浏览器session就会失效。
+            # 如果value是None, session会依赖全局session失效策略。
+            return redirect('/index')
         else:
             ret['error']['login_error'] = '用户名或密码错误'
             return render(request, 'login.html', ret)
 
 
+'''
+            ret['status'] = True
+            result = punch.dcits(name)
+            return HttpResponse(result)
+            # return render(request, 'result.html', result)
+'''
+
+
 def index(request):
-    user_obj = models.User.objects.get(name='admin')
-    print(type(user_obj.name))
-    print(user_obj.pwd)
-    ret = {'name': [user_obj.name, user_obj.pwd], 'pwd': 'zzz'}
-    return render(request, 'index.html', ret)
+    user_name = request.session.get('user_name')
+    userobj = models.User.objects.filter(name=user_name)
+    if userobj:
+        global ret
+        ret = {'name': userobj[0].name}
+        return render(request, 'index.html', ret)
+    else:
+        return redirect('/login')
+
+def punch_the_clock_api(request):
+    user_name = request.session.get('user_name')
+    userobj = models.User.objects.filter(name=user_name)
+    if userobj:
+        global ret
+        result = punch.dcits(userobj[0].name)
+        ret['date']= {"msg": result, "success": 'true'}
+        return render(request, 'index.html', ret)
+    else:
+        return redirect('/login')
 
 
-def test1(request):
-    ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
-    ret['error']['login_error'] = '用户名或密码错误'
-    # return HttpResponse(ret['error'])
-    return HttpResponse(ret['error']['login_error'])
+
+# 注销逻辑
+def logout(request):
+    # 把userName从当前的session移除
+    # del request.session['login_user_name']
+    request.session.flush()
+
+    return redirect('/login')
 
 
-def LoginForm(request):  # 登陆校验实例
-    ret = {"status": False, "error": {"user_error": "", "pwd_error": "", "login_error": ""}}
-    if request.method == "POST":
-        user = request.POST.get("name")  # 获取用户名
-        pwd = request.POST.get("pwd")  # 获取密码
-        if request.META['REMOTE_ADDR']:  # 判断是否获取用户IP地址
-            access_ip = request.META['REMOTE_ADDR']  # 存到access_ip变量中
-        else:
-            access_ip = request.META['HTTP_X_FORWARDED_FOR']  # 获取用户的真实IP，非代理IP
-
-        if access_ip:
-            ip_obj = models.login_history.objects.filter(ip=access_ip).first()  # 在历史登录表中查找是否有这个IP
-
-            if ip_obj:
-                current_time = datetime.datetime.now()  # 获取当前时间
-                second = current_time - ip_obj.utime  # 用当前时间减去最近登录的时间
-                second = second.seconds  # 转换为秒数
-                count = ip_obj.count  # 获取当前对象的登录次数
-                count = count + 1  # 次数加1
-                ip_obj.count = count  # 修改次数信息
-                ip_obj.save()  # 保存
-                if second < 60 and count >= 10:  # 判断秒数是否小于60秒并且次数大于等于10
-                    ret["error"]["login_error"] = "过于频繁登录，你已经被锁着,等一会60秒之后再登录"
-                    ip_obj.user = user  # 登录的用户名
-                    ip_obj.lock = 1  # 值为1表示锁着
-                    ip_obj.save()  # 保存
-                    return HttpResponse(json.dumps(ret))  # 返回给前端
-                elif ip_obj.lock == 1 and second >= 60:  # 判断lock是否等于1和秒数大于60秒
-                    ip_obj.lock = 0  # 值为0表示解锁
-                    ip_obj.count = 1  # 初始化登录次数
-                    ip_obj.save()  # 保存
-            else:
-                models.login_history.objects.create(user=user, ip=access_ip, count=1, lock=0)  # 没有登录过，就创建记录
-
-        if user:
-            account_obj = models.User.objects.filter(username=user).first()  # 判断这个用户名是否存在
-            if not account_obj:
-                ret["error"]["user_error"] = "用户名错误或者不存在"
-        else:
-            ret["error"]["user_error"] = "用户名不能为空"
-
-        if pwd == "":
-            ret["error"]["pwd_error"] = "密码不能为空"
 
 
-'''
-        users = authenticate(username=user, password=pwd)  # 验证用户名和密码是否一样
-        if users:
-            request.session["user_id"] = users.pk  # 存储到session会话中
-            initial_session(users, request)
-            ret["status"] = True
-            ip_obj.count = 1  # 登录次数等于1
-            ip_obj.save()
-            return HttpResponse(json.dumps(ret))  # 返回前端
-        else:
-            ret["error"]["pwd_error"] = "用户名或密码不正确"
-        return HttpResponse(json.dumps(ret))
-    return render(request, "login.html")
 
-'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
