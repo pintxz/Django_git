@@ -31,19 +31,17 @@ def dcits(name):
                "workReportType": username.workReportType, "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": username.secondAppUser, "imagePath": username.imagePath}
-    print(textmod)
-
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
+        logger.info(results.text)
+        result['dk'] = '打卡成功！'
+        if '保存成功' != json.loads(results.text)['msg']:
+            result['dk'] = '打卡返回值异常，请联系管理员，并去微信小程序进行核实打卡结果！'
+            logger.info(results)
     except:
         result['dk'] = '打卡请求异常！！！'
         return result
 
-    logger.info(results.text)
-    result['dk'] = '打卡成功！'
-    if '保存成功' != json.loads(results.text)['msg']:
-        result['dk'] = '打卡返回值异常，请联系管理员，并去微信小程序进行核实打卡结果！'
-        logger.info(results)
     call_url = 'https://itswkwc.dcits.com/wechatserver/sign/getCard?openId=%s' % username.openId
     try:
         call_result = requests.get(call_url, headers=header_dict, verify=False)
