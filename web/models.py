@@ -32,12 +32,14 @@ class ask(models.Model):
     secondAppUser = models.CharField(max_length=32)
     imagePath = models.CharField(max_length=32)
     model = models.CharField(max_length=64)
+    prefectural = models.CharField(max_length=64)
 
 class location(models.Model):
     id = models.AutoField(primary_key=True)
     longitude = models.CharField(max_length=32)
     latitude = models.CharField(max_length=32)
     address = models.CharField(max_length=1024)
+    prefectural = models.CharField(max_length=64)
 
 class phone_model(models.Model):
     id = models.AutoField(primary_key=True)

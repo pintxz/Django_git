@@ -27,4 +27,5 @@ urlpatterns = [
     path('index', views.index),
     path('logout', views.logout),
     path('punch_the_clock_api', views.punch_the_clock_api),
+    
 ]

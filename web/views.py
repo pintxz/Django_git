@@ -58,7 +58,6 @@ def login(request):
             ret['error']['login_error'] = '用户名或密码错误'
             return render(request, 'login.html', ret)
 
-
 '''
             ret['status'] = True
             result = punch.dcits(name)

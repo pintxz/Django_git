@@ -6,10 +6,11 @@ logger = logging.getLogger('log')
 
 
 def dcits(name):
-    user_obj = models.location.objects.all()
+    # user_obj = models.location.objects.all()
+    username = models.ask.objects.get(name=name)
+    user_obj = models.location.objects.filter(prefectural=username.prefectural)
     subscript = random.randint(1, len(user_obj))
     location = models.location.objects.get(id=subscript)
-    username = models.ask.objects.get(name=name)
     header = models.phone_model.objects.get(model=username.model)
     header_dict = json.loads(header.header_dict)
     result = {'dk':'','dz':'','fh':''}
@@ -30,12 +31,14 @@ def dcits(name):
                "workReportType": username.workReportType, "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": username.secondAppUser, "imagePath": username.imagePath}
+    print(textmod)
 
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
     except:
         result['dk'] = '打卡请求异常！！！'
         return result
+
     logger.info(results.text)
     result['dk'] = '打卡成功！'
     if '保存成功' != json.loads(results.text)['msg']:
