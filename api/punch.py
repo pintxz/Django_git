@@ -9,13 +9,13 @@ def dcits(name):
     # user_obj = models.location.objects.all()
     username = models.ask.objects.get(name=name)
     user_obj = models.location.objects.filter(prefectural=username.prefectural)
-    subscript = random.randint(1, len(user_obj))
-    location = models.location.objects.get(id=subscript)
+    subscript = random.randint(0, len(user_obj) - 1)
+    location = user_obj[subscript]
     header = models.phone_model.objects.get(model=username.model)
     header_dict = json.loads(header.header_dict)
-    result = {'dk':'','dz':'','fh':''}
+    result = {'dk': '', 'dz': '', 'fh': ''}
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
-    '''
+
     header_dict = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mi 10 Build/QKQ1.191117.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120  Mobile Safari/537.36 MMWEBID/4701 MicroMessenger/7.0.15.1680(0x27000FB3) Process/tools WeChat/arm64 NetType/4G Language/zh_CN ABI/arm64",
         "Content-Type": "application/json"}
@@ -26,11 +26,13 @@ def dcits(name):
         "User-Agent": "Mozilla/5.0 (Linux; Android 8.1.0; vivo s1 Build/OPM1.171019.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.20 SP-engine/2.16.0 baiduboxapp/11.20.0.14 (Baidu; P1 8.1.0)",
         "Content-Type": "application/json"}
     '''
+    '''
     textmod = {"userId": username.userId, "projectId": username.projectId, "ruleId": username.ruleId,
                "addrId": username.addrId, "apprUserId": username.apprUserId, "deptId": username.deptId,
                "workReportType": username.workReportType, "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": username.secondAppUser, "imagePath": username.imagePath}
+
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
         logger.info(results.text)
@@ -49,7 +51,12 @@ def dcits(name):
         result['dz'] = '请求异常！！！'
         result['fh'] = '请联系管理员！！！'
         return result
-    result['dz'] = json.loads(call_result.text)['firstCard']['address']
-    result['fh'] = json.loads(call_result.text)['msg']
+
+    information = json.loads(call_result.text)
+    result['dz'] = information['firstCard']['address']
+    if 'lastCard' in information:
+        result['dz'] = information['lastCard']['address']
+    result['fh'] = information['msg']
     logger.info(call_result.text)
+
     return result
