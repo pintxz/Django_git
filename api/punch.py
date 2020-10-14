@@ -14,25 +14,34 @@ def dcits(name):
     header = models.phone_model.objects.get(model=username.model)
     header_dict = json.loads(header.header_dict)
     result = {'dk': '', 'dz': '', 'fh': ''}
+    addrId = 0
+
+    front_url = 'https://itswkwc.dcits.com/wechatserver/sign/getSignRuleData?openId=%s' % username.openId
+    try:
+        informations = requests.get(front_url, headers=header_dict, verify=False)
+    except:
+        result['dz'] = '第一请求异常！！！'
+        result['fh'] = '请联系管理员！！！'
+        return result
+
+    informations = json.loads(informations.text)
+    information = informations['data']
+    for addrIds in information['addressList']:
+        if location.longitude[:6] == str(addrIds['attendanceLon'])[:6] and location.latitude[:5] == str(addrIds['attendanceLat'])[:5]:
+            addrId = addrIds['id']
+            break
+    if addrId == 0:
+        result['dz'] = '请求异常！！！'
+        result['fh'] = '没有找到匹配的打卡地址，请联系管理员！！！'
+        return result
+
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
-
-    header_dict = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mi 10 Build/QKQ1.191117.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120  Mobile Safari/537.36 MMWEBID/4701 MicroMessenger/7.0.15.1680(0x27000FB3) Process/tools WeChat/arm64 NetType/4G Language/zh_CN ABI/arm64",
-        "Content-Type": "application/json"}
-    header_dict = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 9; MI 6 Build/PKQ1.190118.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.17 SP-engine/2.13.0 baiduboxapp/11.17.0.13 (Baidu; P1 9) NABar/1.0",
-        "Content-Type": "application/json"}
-    header_dict = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 8.1.0; vivo s1 Build/OPM1.171019.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.20 SP-engine/2.16.0 baiduboxapp/11.20.0.14 (Baidu; P1 8.1.0)",
-        "Content-Type": "application/json"}
-    '''
-    '''
-    textmod = {"userId": username.userId, "projectId": username.projectId, "ruleId": username.ruleId,
-               "addrId": username.addrId, "apprUserId": username.apprUserId, "deptId": username.deptId,
-               "workReportType": username.workReportType, "longitude": location.longitude,
+    textmod = {"userId": information['employeeId'], "projectId": information['projectId'], "ruleId": information['ID'],
+                "addrId": addrId, "apprUserId": information['apprUserId'], "deptId": information['deptId'],
+               "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
-               "secondAppUser": username.secondAppUser, "imagePath": username.imagePath}
-
+               "secondAppUser": information['SECONDAPPUSER'], "imagePath": ""}
+    logger.info(textmod)
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
         logger.info(results.text)
