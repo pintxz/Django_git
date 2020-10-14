@@ -32,6 +32,7 @@ def test(request):
 
 
 def login(request):
+    error = {'login_error':''}
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
@@ -55,8 +56,8 @@ def login(request):
             # 如果value是None, session会依赖全局session失效策略。
             return redirect('/index')
         else:
-            ret['error']['login_error'] = '用户名或密码错误'
-            return render(request, 'login.html', ret)
+            error['login_error'] = '用户名或密码错误'
+            return render(request, 'login.html', error)
 
 '''
             ret['status'] = True
