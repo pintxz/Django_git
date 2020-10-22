@@ -22,6 +22,7 @@ def dcits(name):
     except:
         result['dz'] = '第一请求异常！！！'
         result['fh'] = '请联系管理员！！！'
+        logger.info('-------------------------------%s结束！------------------------------' % name)
         return result
 
     informations = json.loads(informations.text)
@@ -33,7 +34,9 @@ def dcits(name):
     if addrId == 0:
         result['dz'] = '请求异常！！！'
         result['fh'] = '没有找到匹配的打卡地址，请联系管理员！！！'
+        logger.info('-------------------------------%s结束！------------------------------' % name)
         return result
+
 
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
     textmod = {"userId": information['employeeId'], "projectId": information['projectId'], "ruleId": information['ID'],
@@ -52,6 +55,7 @@ def dcits(name):
     except:
         result['dk'] = '打卡请求异常！！！'
         return result
+        logger.info('-------------------------------%s结束！------------------------------' % name)
 
     call_url = 'https://itswkwc.dcits.com/wechatserver/sign/getCard?openId=%s' % username.openId
     try:
@@ -59,13 +63,15 @@ def dcits(name):
     except:
         result['dz'] = '请求异常！！！'
         result['fh'] = '请联系管理员！！！'
+        logger.info('-------------------------------%s结束！------------------------------' % name)
         return result
 
-    information = json.loads(call_result.text)
-    result['dz'] = information['firstCard']['address']
-    if 'lastCard' in information:
-        result['dz'] = information['lastCard']['address']
-    result['fh'] = information['msg']
+    informationz = json.loads(call_result.text)
+    ogger.info('informationz:%s' % informationz)
+    result['dz'] = informationz['firstCard']['address']
+    if 'lastCard' in informationz:
+        result['dz'] = informationz['lastCard']['address']
+    result['fh'] = informationzz['msg']
     logger.info(call_result.text)
-
+    logger.info('-------------------------------%s结束！------------------------------' % name)
     return result
