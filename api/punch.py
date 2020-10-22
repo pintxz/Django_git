@@ -67,12 +67,9 @@ def dcits(name):
         logger.info('-------------------------------%s结束！------------------------------' % name)
         return result
 
-    informationz = json.loads(call_result.text)
-    logger.info('informationz:%s' % informationz)
-    result['dz'] = informationz['firstCard']['address']
-    if 'lastCard' in informationz:
-        result['dz'] = informationz['lastCard']['address']
-    result['fh'] = informationzz['msg']
+    informationz = call_result.text
     logger.info(call_result.text)
+    result['dz'] = informationz[informationz.rfind('address')+11:informationz.rfind('secondAppUser')-4]
+    result['fh'] = informationz[informationz.rfind('msg'):len(informationz)-1]
     logger.info('-------------------------------%s结束！------------------------------' % name)
     return result
