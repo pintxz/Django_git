@@ -6,6 +6,7 @@ logger = logging.getLogger('log')
 
 
 def dcits(name):
+    logger.info('-------------------------------%s开始！------------------------------' % name)
     # user_obj = models.location.objects.all()
     username = models.ask.objects.get(name=name)
     user_obj = models.location.objects.filter(prefectural=username.prefectural)
@@ -67,7 +68,7 @@ def dcits(name):
         return result
 
     informationz = json.loads(call_result.text)
-    ogger.info('informationz:%s' % informationz)
+    logger.info('informationz:%s' % informationz)
     result['dz'] = informationz['firstCard']['address']
     if 'lastCard' in informationz:
         result['dz'] = informationz['lastCard']['address']
