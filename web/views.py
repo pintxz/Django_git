@@ -28,7 +28,13 @@ def test(request):
     return HttpResponse('123')
     119.45.15.183
     '''
-    return HttpResponse('123')
+    name = request.POST.get('name')
+    pwd = request.POST.get('pwd')
+    user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
+    data = {'key': '1', 'remark': '登录失败！'}
+    if user_obj:
+        data = {'key':'0','remark':'登录成功！'}
+    return HttpResponse(json.dumps(data))
 
 
 def login(request):
@@ -71,7 +77,6 @@ def index(request):
     user_name = request.session.get('user_name')
     userobj = models.User.objects.filter(name=user_name)
     if userobj:
-        global ret
         ret = {'name': userobj[0].name}
         return render(request, 'index.html', ret)
     else:
@@ -81,8 +86,8 @@ def punch_the_clock_api(request):
     user_name = request.session.get('user_name')
     userobj = models.User.objects.filter(name=user_name)
     if userobj:
-        global ret
         result = punch.dcits(userobj[0].name)
+        ret = {'name': userobj[0].name}
         ret['date']= {"msg": result, "success": 'true'}
         return render(request, 'index.html', ret)
     else:
