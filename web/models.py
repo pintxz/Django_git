@@ -18,7 +18,7 @@ class User(models.Model):
     name = models.CharField(max_length=32)
     pwd = models.CharField(max_length=32)
 
-
+'''
 class ask(models.Model):
     name = models.CharField(max_length=32)
     openId = models.CharField(max_length=64)
@@ -31,6 +31,12 @@ class ask(models.Model):
     workReportType = models.CharField(max_length=32)
     secondAppUser = models.CharField(max_length=32)
     imagePath = models.CharField(max_length=32)
+    model = models.CharField(max_length=64)
+    prefectural = models.CharField(max_length=64)
+'''
+class ask(models.Model):
+    name = models.CharField(max_length=32)
+    openId = models.CharField(max_length=64)
     model = models.CharField(max_length=64)
     prefectural = models.CharField(max_length=64)
 
