@@ -1,5 +1,4 @@
-import json, requests, time, random, logging
-from datetime import datetime
+import json, requests, random, logging
 from web import models
 
 logger = logging.getLogger('log')
@@ -29,19 +28,19 @@ def dcits(name):
     informations = json.loads(informations.text)
     information = informations['data']
     for addrIds in information['addressList']:
-        if location.longitude[:6] == str(addrIds['attendanceLon'])[:6] and location.latitude[:5] == str(addrIds['attendanceLat'])[:5]:
+        if location.longitude[:6] == str(addrIds['attendanceLon'])[:6] and location.latitude[:5] == str(
+                addrIds['attendanceLat'])[:5]:
             addrId = addrIds['id']
             break
     if addrId == 0:
         result['dz'] = '请求异常！！！'
         result['fh'] = '没有找到匹配的打卡地址，请联系管理员！！！'
-        logger.info('-------------------------------%s结束！------------------------------' % name)
+        logger.info('----没有找到匹配的打卡地址，请联系管理员！！！----%s结束！------------------------------' % name)
         return result
-
 
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
     textmod = {"userId": information['employeeId'], "projectId": information['projectId'], "ruleId": information['ID'],
-                "addrId": addrId, "apprUserId": information['apprUserId'], "deptId": information['deptId'],
+               "addrId": addrId, "apprUserId": information['apprUserId'], "deptId": information['deptId'],
                "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": information['SECONDAPPUSER'], "imagePath": ""}
@@ -55,8 +54,8 @@ def dcits(name):
             logger.info(results)
     except:
         result['dk'] = '打卡请求异常！！！'
-        return result
         logger.info('-------------------------------%s结束！------------------------------' % name)
+        return result
 
     call_url = 'https://itswkwc.dcits.com/wechatserver/sign/getCard?openId=%s' % username.openId
     try:
@@ -69,7 +68,7 @@ def dcits(name):
 
     informationz = call_result.text
     logger.info(call_result.text)
-    result['dz'] = informationz[informationz.rfind('address')+11:informationz.rfind('secondAppUser')-4]
-    result['fh'] = informationz[informationz.rfind('msg'):len(informationz)-1]
+    result['dz'] = informationz[informationz.rfind('address') + 11:informationz.rfind('secondAppUser') - 4]
+    result['fh'] = informationz[informationz.rfind('msg'):len(informationz) - 1]
     logger.info('-------------------------------%s结束！------------------------------' % name)
     return result
