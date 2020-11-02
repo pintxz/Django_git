@@ -45,7 +45,7 @@ def dcits(name):
                "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": information['SECONDAPPUSER'], "imagePath": ""}
-    logger.info('请求：%s' % front_url)
+    logger.info('请求：%s' % url)
     logger.info('参数：%s' % textmod)
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
