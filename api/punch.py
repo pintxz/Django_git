@@ -17,6 +17,7 @@ def dcits(name):
     addrId = 0
 
     front_url = 'https://itswkwc.dcits.com/wechatserver/sign/getSignRuleData?openId=%s' % username.openId
+    logger.info('请求：%s' % front_url)
     try:
         informations = requests.get(front_url, headers=header_dict, verify=False)
     except:
@@ -44,7 +45,8 @@ def dcits(name):
                "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
                "secondAppUser": information['SECONDAPPUSER'], "imagePath": ""}
-    logger.info(textmod)
+    logger.info('请求：%s' % front_url)
+    logger.info('参数：%s' % textmod)
     try:
         results = requests.post(url, json=textmod, headers=header_dict, verify=False)
         logger.info(results.text)
@@ -58,6 +60,7 @@ def dcits(name):
         return result
 
     call_url = 'https://itswkwc.dcits.com/wechatserver/sign/getCard?openId=%s' % username.openId
+    logger.info('请求：%s' % call_url)
     try:
         call_result = requests.get(call_url, headers=header_dict, verify=False)
     except:
