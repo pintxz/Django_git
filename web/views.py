@@ -9,6 +9,7 @@ from api import punch
 logger = logging.getLogger('log')
 ret = {}
 
+
 # 说明：这个装饰器的作用，就是在每个视图函数被调用时，都验证下有没法有登录，
 # 如果有过登录，则可以执行新的视图函数，
 # 否则没有登录则自动跳转到登录页面。
@@ -19,6 +20,7 @@ def check_login(f):
             return f(request, *arg, **kwargs)
         else:
             return redirect('/login')
+
     return inner
 
 
@@ -26,19 +28,20 @@ def test(request):
     '''
     punch.dcits('fengjh')
     return HttpResponse('123')
-    119.45.15.183
+    119.45.15.183s
     '''
     name = request.POST.get('name')
     pwd = request.POST.get('pwd')
     user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
     data = {'key': '1', 'remark': '登录失败！'}
     if user_obj:
-        data = {'key':'0','remark':'登录成功！'}
+        data = {'key': '0', 'remark': '登录成功！'}
+
     return HttpResponse(json.dumps(data))
 
 
 def login(request):
-    error = {'login_error':''}
+    error = {'login_error': ''}
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
@@ -65,6 +68,7 @@ def login(request):
             error['login_error'] = '用户名或密码错误'
             return render(request, 'login.html', error)
 
+
 '''
             ret['status'] = True
             result = punch.dcits(name)
@@ -82,17 +86,17 @@ def index(request):
     else:
         return redirect('/login')
 
+
 def punch_the_clock_api(request):
     user_name = request.session.get('user_name')
     userobj = models.User.objects.filter(name=user_name)
     if userobj:
         result = punch.dcits(userobj[0].name)
         ret = {'name': userobj[0].name}
-        ret['date']= {"msg": result, "success": 'true'}
+        ret['date'] = {"msg": result, "success": 'true'}
         return render(request, 'index.html', ret)
     else:
         return redirect('/login')
-
 
 
 # 注销逻辑
@@ -102,26 +106,3 @@ def logout(request):
     request.session.flush()
 
     return redirect('/login')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
