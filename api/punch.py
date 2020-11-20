@@ -27,7 +27,9 @@ def dcits(name):
         return result
 
     informations = json.loads(informations.text)
+    logger.info('information值：%s' % informations)
     information = informations['data']
+    logger.info('information值：%s' % information)
     for addrIds in information['addressList']:
         if location.longitude[:6] == str(addrIds['attendanceLon'])[:6] and location.latitude[:5] == str(
                 addrIds['attendanceLat'])[:5]:
