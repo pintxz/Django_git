@@ -46,7 +46,7 @@ def dcits(request,name):
         return result
 
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
-    textmod = {"userId": information['employeeId'], "projectId": information['PROJECTID'], "ruleId": information['ID'],
+    textmod = {"userId": information['employeeId'], "projectId": information['projectId'], "ruleId": information['ID'],
                "addrId": addrId, "apprUserId": information['apprUserId'], "deptId": information['deptId'],
                "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,
