@@ -4,15 +4,19 @@ from web import models
 logger = logging.getLogger('log')
 
 
-def dcits(name):
+def dcits(request,name):
     logger.info('-------------------------------%s开始！------------------------------' % name)
     # user_obj = models.location.objects.all()
     username = models.ask.objects.get(name=name)
     user_obj = models.location.objects.filter(prefectural=username.prefectural)
     subscript = random.randint(0, len(user_obj) - 1)
     location = user_obj[subscript]
-    header = models.phone_model.objects.get(model=username.model)
-    header_dict = json.loads(header.header_dict)
+    # header = models.phone_model.objects.get(model=username.model)
+    # header_dict = json.loads(header.header_dict)
+    header_dict = {
+        "User-Agent":request.environ['HTTP_USER_AGENT'],
+        "Content-Type": "application/json"
+    }
     result = {'dk': '', 'dz': '', 'fh': ''}
     addrId = 0
 
@@ -42,7 +46,7 @@ def dcits(name):
         return result
 
     url = 'https://itswkwc.dcits.com/wechatserver/sign/saveSignRuleData'
-    textmod = {"userId": information['employeeId'], "projectId": information['projectId'], "ruleId": information['ID'],
+    textmod = {"userId": information['employeeId'], "projectId": information['PROJECTID'], "ruleId": information['ID'],
                "addrId": addrId, "apprUserId": information['apprUserId'], "deptId": information['deptId'],
                "workReportType": information['missionType'], "longitude": location.longitude,
                "latitude": location.latitude, "address": location.address,

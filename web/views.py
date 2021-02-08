@@ -1,8 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
-import json, logging, datetime, random
-from web import models
+import json, logging
+from web import models, AndroidDB
 from functools import wraps
 from api import punch
 
@@ -30,15 +28,45 @@ def test(request):
     return HttpResponse('123')
     119.45.15.183s
     '''
+    header = request.environ['HTTP_USER_AGENT']
+    print(header)
+    data = {'name': 'fengjh'}
+    AndroidDB.inquire(data)
+    '''
     name = request.POST.get('name')
     pwd = request.POST.get('pwd')
     user_obj = models.User.objects.filter(name=name, pwd=pwd).first()
     data = {'key': '1', 'remark': '登录失败！'}
     if user_obj:
         data = {'key': '0', 'remark': '登录成功！'}
+    '''
+    return HttpResponse(json.dumps(header))
 
-    return HttpResponse(json.dumps(data))
 
+def Registration(request):
+    error = {'login_error': ''}
+    data = {
+        'name': request.POST.get('name'),
+        'pwd': request.POST.get('pwd'),
+        'openId': request.POST.get('openId'),
+        'prefectural': request.POST.get('prefectural')
+    }
+    try:
+        AndroidDB.register(data)
+        return render(request, 'login.html')
+    except:
+        error['login_error'] = '注册失败！'
+        return render(request, 'register.html', error)
+
+# 查询用户
+def inquires(request):
+    data = AndroidDB.inquires()
+    return HttpResponse(data)
+
+# 删除用户
+def remove(request):
+
+    return HttpResponse('用户删除成功！')
 
 def login(request):
     error = {'login_error': ''}
@@ -91,7 +119,7 @@ def punch_the_clock_api(request):
     user_name = request.session.get('user_name')
     userobj = models.User.objects.filter(name=user_name)
     if userobj:
-        result = punch.dcits(userobj[0].name)
+        result = punch.dcits(request, userobj[0].name)
         ret = {'name': userobj[0].name}
         ret['date'] = {"msg": result, "success": 'true'}
         return render(request, 'index.html', ret)
